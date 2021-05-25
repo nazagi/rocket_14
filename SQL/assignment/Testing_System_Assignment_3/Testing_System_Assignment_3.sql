@@ -17,9 +17,9 @@ CREATE TABLE `position`
 CREATE TABLE `account`
 (
 	`accountID` 			int auto_increment PRIMARY KEY,
-    `email`					VARCHAR(100) UNIQUE NOT NULL,
+    `email`					NVARCHAR(100) UNIQUE NOT NULL,
     `username`				VARCHAR(50) UNIQUE NOT NULL,
-    `fullname`				VARCHAR(50) NOT NULL,
+    `fullname`				NVARCHAR(50) NOT NULL,
     `createdate`			datetime,
     `departmentID`			INT NOT NULL,
     `positionID`			INT NOT NULL,
@@ -30,16 +30,16 @@ CREATE TABLE `account`
 CREATE TABLE `group`
 (
 	`groupID`			INT PRIMARY KEY,
-    `groupname`			VARCHAR(50),
+    `groupname`			NVARCHAR(50),
+    `creatorID`			INT NOT NULL,
     `createdate`		datetime,
-    `creatorID`		INT,
    FOREIGN KEY (`creatorID`) REFERENCES `account`(`accountID`)
 );
 
 CREATE TABLE `groupaccount`
 (
 	`groupID` 		INT NOT NULL,
-    `accountID`	INT NOT NULL,
+    `accountID`		INT NOT NULL,
 	FOREIGN KEY (`groupID`) REFERENCES `group`(`groupID`),
     FOREIGN KEY	(`accountID`) REFERENCES `account`(`accountID`),
     `joindate`		datetime
@@ -48,19 +48,19 @@ CREATE TABLE `groupaccount`
 CREATE TABLE `typequestion`
 (
 	`typeID`		INT auto_increment PRIMARY KEY,
-    `typename`		VARCHAR(30)
+    `typename`		NVARCHAR(30)
 );
 
 CREATE TABLE `categoryquestion`
 (
 	`categoryID`			INT auto_increment PRIMARY KEY,
-    `categoryname`			VARCHAR(30)
+    `categoryname`			NVARCHAR(30)
 );
 
 CREATE TABLE `question`
 (
 	`questionID`					INT auto_increment PRIMARY KEY,
-    `questioncontent`				VARCHAR(300),
+    `questioncontent`				NVARCHAR(300),
     `categoryID`					INT NOT NULL,
     `creatorID`						INT NOT NULL,
     `typeID`						INT NOT NULL,
@@ -73,7 +73,7 @@ CREATE TABLE `question`
 CREATE TABLE `answer`
 (
 	`answerID`				INT auto_increment PRIMARY KEY,
-    `answercontent`			VARCHAR(300),
+    `answercontent`			NVARCHAR(300),
     `questionID`			INT NOT NULL,
     `isCorrect`				ENUM('0' , '1'),
     FOREIGN KEY (`questionID`) REFERENCES `question`(`questionID`)
@@ -82,8 +82,8 @@ CREATE TABLE `answer`
 CREATE TABLE `exam`
 (
 	`examID`			INT auto_increment PRIMARY KEY,
-    `code`				INT,
-    `title`				VARCHAR(50),
+    `code`				VARCHAR(30),
+    `title`				NVARCHAR(50),
     `categoryID`		INT NOT NULL,
     `creatorID`			INT NOT NULL,
     `duration` 			INT,
@@ -103,11 +103,16 @@ CREATE TABLE `examquestion`
 -- Question 1: Thêm ít nhất 10 record vào mỗi table
 INSERT INTO `department` (`departmentname`) 
 VALUES 
-	('Sale'				),
-	('Marketing'		),
-    ('Dev'				),
-    ('CSKH'				),
-    ('HR'				);
+						(N'Marketing'	),
+						(N'Sale'		),
+						(N'Bảo vệ'		),
+						(N'Nhân sự'		),
+						(N'Kỹ thuật'	),
+						(N'Tài chính'	),
+						(N'Phó giám đốc'),
+						(N'Giám đốc'	),
+						(N'Thư kí'		),
+						(N'Bán hàng'	);
     
 INSERT INTO `position`(`positionname`)
 VALUES
@@ -116,111 +121,119 @@ VALUES
     ('Scrum Master'	),
     ('PM'			);
 
-INSERT INTO `account` (`email`,`username`,`fullname`,`createdate`,`departmentID`,`positionID`)
+INSERT INTO `account` (`email`,`username`,`fullname`,`departmentID`,`positionID`,`createdate`)
 VALUES
-	('nguyennam1@gmail.com',	'nam1',		'nguyen nam1',	'2018-01-02',	'1',	'4'		),
-    ('nguyennam1@gmai2.com',	'nam2',		'nguyen nam2',	'2018-03-05',	'2',	'4'		),
-	('nguyennam1@gmai3.com',	'nam3',		'nguyen nam3',	'2017-05-02',	'4',	'4'		),
-    ('nguyennam1@gmai4.com',	'nam4',		'nguyen nam4',	'2016-12-25',	'3',	'1'		),
-    ('nguyennam1@gmai5.com',	'nam5',		'nguyen nam5',	'2021-10-05',	'3',	'1'		),
-    ('nguyennam1@gmai6.com',	'nam6',		'nguyen nam6',	'2020-11-20',	'3',	'2'		),
-    ('nguyennam1@gmai7.com',	'nam7',		'nguyen nam7',	'2019-07-27',	'3',	'3'		),
-    ('nguyennam1@gmai8.com',	'nam8',		'nguyen nam8',	'2019-01-22',	'3',	'3'		),
-    ('nguyennam1@gmai9.com',	'nam9',		'nguyen nam9',	'2017-09-16',	'5',	'4'		),
-    ('nguyennam1@gmail0.com',	'nam10',	'nguyen nam10',	'2020-08-14',	'3',	'4'		);
+	 				('haidang29productions@gmail.com'	, 'dangblack'		,'Nguyễn hải Đăng'			,   '5'			,   '1'		,'2020-03-05'),
+					('account1@gmail.com'				, 'quanganh'		,'Nguyen Chien Thang2'		,   '1'			,   '2'		,'2020-03-05'),
+                    ('account2@gmail.com'				, 'vanchien'		,'Nguyen Van Chien'			,   '2'			,   '3'		,'2020-03-07'),
+                    ('account3@gmail.com'				, 'cocoduongqua'	,'Duong Do'					,   '3'			,   '4'		,'2020-03-08'),
+                    ('account4@gmail.com'				, 'doccocaubai'		,'Nguyen Chien Thang1'		,   '4'			,   '4'		,'2020-03-10'),
+                    ('dapphatchetngay@gmail.com'		, 'khabanh'			,'Ngo Ba Kha'				,   '6'			,   '3'		,'2020-04-05'),
+                    ('songcodaoly@gmail.com'			, 'huanhoahong'		,'Bui Xuan Huan'			,   '7'			,   '2'		, NULL		),
+                    ('sontungmtp@gmail.com'				, 'tungnui'			,'Nguyen Thanh Tung'		,   '8'			,   '1'		,'2020-04-07'),
+                    ('duongghuu@gmail.com'				, 'duongghuu'		,'Duong Van Huu'			,   '9'			,   '2'		,'2020-04-07'),
+                    ('vtiaccademy@gmail.com'			, 'vtiaccademy'		,'Vi Ti Ai'					,   '10'		,   '1'		,'2020-04-09');
     
 INSERT INTO `group`
 VALUES
-	('1',	'group1',	'2018-12-25',	'1'	),
-    ('2',	'group2',	'2020-11-15',	'5'	),
-    ('3',	'group3',	'2020-05-12',	'10'),
-    ('4',	'group4',	'2021-04-23',	'7'	),
-    ('5',	'group5',	'2017-01-02',	'5'	);
-    
+	 				('1',	N'Testing System'		,   5			,'2019-03-05'),
+					('2',	N'Development'			,   1			,'2020-03-07'),
+                    ('3',	N'VTI Sale 01'			,   2			,'2020-03-09'),
+                    ('4',	N'VTI Sale 02'			,   3			,'2020-03-10'),
+                    ('5',	N'VTI Sale 03'			,   4			,'2020-03-28'),
+                    ('6',	N'VTI Creator'			,   6			,'2020-04-06'),
+                    ('7',	N'VTI Marketing 01'		,   7			,'2020-04-07'),
+                    ('8',	N'Management'			,   8			,'2020-04-08'),
+                    ('9',	N'Chat with love'		,   9			,'2020-04-09'),
+                    ('10',	N'Vi Ti Ai'				,   10			,'2020-04-10');
+
 INSERT INTO `groupaccount`
 VALUES
-	('1',	'1',	'2019-12-25'	),
-    ('2',	'2',	'2020-11-15'	),
-    ('3',	'3',	'2020-05-12'	),
-    ('4',	'4',	'2021-04-23'	),
-    ('5',	'5',	'2017-01-02'	);
+	 						(	1		,    1		,'2019-03-05'),
+							(	1		,    2		,'2020-03-07'),
+							(	3		,    3		,'2020-03-09'),
+							(	3		,    4		,'2020-03-10'),
+							(	5		,    5		,'2020-03-28'),
+							(	1		,    3		,'2020-04-06'),
+							(	1		,    7		,'2020-04-07'),
+							(	8		,    3		,'2020-04-08'),
+							(	1		,    9		,'2020-04-09'),
+							(	10		,    10		,'2020-04-10');
+
 
 INSERT INTO `typequestion` (`typename`)
 VALUES
-		('tu luan'		),
-		('trac nghiem'	);
+				('Essay'			), 
+				('Multiple-Choice'	); 
         
 INSERT INTO `categoryquestion` (`categoryname`)
 VALUES
-	('Java'			),
-    ('PHP'			),
-    ('CPP'			),
-    ('.Net'			),
-    ('Ruby'			),
-    ('python'		),
-    ('Postman'		);
+									('Java'			),
+									('ASP.NET'		),
+									('ADO.NET'		),
+									('SQL'			),
+									('Postman'		),
+									('Ruby'			),
+									('Python'		),
+									('C++'			),
+									('C Sharp'		),
+									('PHP'			);
+									
     
-INSERT INTO `question` (`questioncontent`,`categoryID`,`creatorID`,`typeID`,`createdate`)
+INSERT INTO `question` (`questioncontent`,`categoryID`,`typeID`,`creatorID`,`createdate`)
 VALUES
-	('cau hoi java', 		'1', 	'4',	'2', 	'2018-01-02'	),
-    ('cau hoi java2', 		'1', 	'7',	'2', 	'2018-01-02'	),
-    ('cau hoi PHP', 		'2', 	'4',	'2', 	'2018-01-02'	),
-    ('cau hoi PHP2', 		'2', 	'2',	'2', 	'2018-01-02'	),
-    ('cau hoi java3', 		'1', 	'3',	'2', 	'2018-01-02'	),
-    ('cau hoi java4',		'1', 	'9',	'2', 	'2018-01-02'	),
-    ('cau hoi CPP', 		'3', 	'1',	'2', 	'2018-01-02'	),
-    ('cau hoi CPP2', 		'3', 	'1',	'2',  	'2018-01-02'	),
-    ('cau hoi CPP3',		'3', 	'2',	'2',  	'2018-01-02'	),
-    ('cau hoi .NET',		'4', 	'1',	'2',  	'2018-01-02'	),
-    ('cau hoi python', 		'6', 	'8',	'2',  	'2018-01-02'	),
-    ('cau hoi ruby', 		'5', 	'10',	'2',  	'2018-01-02'	),
-    ('cau hoi ruby2', 		'5', 	'10',	'2',  	'2018-01-02'	),
-    ('cau hoi ruby3', 		'5', 	'10',	'2',  	'2018-01-02'	),
-    ('cau hoi postman', 	'7', 	'5',	'2',  	'2018-01-02'	),
-    ('cau hoi postman2',	'7', 	'6',	'2',  	'2018-01-02'	),
-    ('cau hoi postman3',	'7', 	'7',	'2',  	'2018-01-02'	),
-    ('cau hoi postman4',	'7', 	'8',	'2',  	'2018-01-02'	),
-    ('cau hoi postman5',	'7', 	'9',	'2',  	'2018-01-02'	),
-    ('cau hoi java5',		'1', 	'3',	'2',  	'2018-01-02'	);
+						(N'Câu hỏi về Java Câu hỏi về Java Câu hỏi về Java Câu hỏi về Java'	,	1		,   '1'			,   '2'		,'2020-04-05'),
+						(N'Câu Hỏi về PHP'	,	10		,   '2'			,   '2'		,'2020-04-05'),
+						(N'Hỏi về C#'		,	9		,   '2'			,   '3'		,'2020-04-06'),
+						(N'Hỏi về Ruby'		,	6		,   '1'			,   '4'		,'2020-04-06'),
+						(N'Hỏi về Postman'	,	5		,   '1'			,   '5'		,'2020-04-06'),
+						(N'Hỏi về ADO.NET'	,	3		,   '2'			,   '6'		,'2020-04-06'),
+						(N'Hỏi về ASP.NET'	,	2		,   '1'			,   '7'		,'2020-04-06'),
+						(N'Hỏi về C++'		,	8		,   '1'			,   '8'		,'2020-04-07'),
+						(N'Hỏi về SQL'		,	4		,   '2'			,   '9'		,'2020-04-07'),
+						(N'Hỏi về Python'	,	7		,   '1'			,   '10'	,'2020-04-07');
+
 
 INSERT INTO `answer` (`answercontent`,`questionID`,`iscorrect`)
 VALUES
-	('a',	'1',	'1'	),
-	('b',	'3',	'1'	),
-    ('c',	'1',	'0'	),
-    ('a',	'15',	'0'	),
-    ('a',	'20',	'1'	),
-    ('c',	'13',	'0'	),
-    ('d',	'5',	'0'	),
-    ('e',	'7',	'1'	),
-    ('f',	'2',	'1'	),
-    ('b',	'3',	'1'	),
-    ('a',	'3',	'1'	),
-    ('c',	'3',	'1'	);
+					(N'Trả lời 01'	,   1			,	'0'		),
+					(N'Trả lời 02'	,   1			,	'1'		),
+                    (N'Trả lời 03'	,   1			,	'0'		),
+                    (N'Trả lời 04'	,   1			,	'1'		),
+                    (N'Trả lời 05'	,   2			,	'1'		),
+                    (N'Trả lời 06'	,   3			,	'1'		),
+                    (N'Trả lời 07'	,   4			,	'0'		),
+                    (N'Trả lời 08'	,   8			,	'0'		),
+                    (N'Trả lời 09'	,   9			,	'1'		),
+                    (N'Trả lời 10'	,   10			,	'1'		);
+	
     
-INSERT INTO `exam` (`code`,`title`,`categoryID`,`creatorID`,`duration`,`createdate`)
+INSERT INTO `exam` (`code`,`title`,`categoryID`,`duration`,`creatorID`,`createdate`)
 VALUES
-	('324',		'java',		'1',	'3',	'60', 	'2018-01-02'),
-	('320',		'java',		'1',	'3',	'60', 	'2018-01-02'),
-    ('321',		'java',		'4',	'4',	'60', 	'2018-01-02'),
-    ('322',		'java',		'2',	'4',	'60', 	'2018-01-02'),
-    ('323',		'java',		'4',	'10',	'60', 	'2018-01-02'),
-    ('325',		'java',		'6',	'2',	'60', 	'2018-01-02'),
-    ('326',		'java',		'3',	'5',	'60', 	'2018-01-02'),
-    ('327',		'java',		'2',	'3',	'60', 	'2018-01-02'),
-    ('328',		'java',		'5',	'3',	'60', 	'2018-01-02');
+					('VTIQ001'		, N'Đề thi C#'			,	1			,	60		,   '5'			,'2019-04-05'),
+					('VTIQ002'		, N'Đề thi PHP'			,	10			,	60		,   '2'			,'2019-04-05'),
+                    ('VTIQ003'		, N'Đề thi C++'			,	9			,	120		,   '2'			,'2019-04-07'),
+                    ('VTIQ004'		, N'Đề thi Java'		,	6			,	60		,   '3'			,'2020-04-08'),
+                    ('VTIQ005'		, N'Đề thi Ruby'		,	5			,	120		,   '4'			,'2020-04-10'),
+                    ('VTIQ006'		, N'Đề thi Postman'		,	3			,	60		,   '6'			,'2020-04-05'),
+                    ('VTIQ007'		, N'Đề thi SQL'			,	2			,	60		,   '7'			,'2020-04-05'),
+                    ('VTIQ008'		, N'Đề thi Python'		,	8			,	60		,   '8'			,'2020-04-07'),
+                    ('VTIQ009'		, N'Đề thi ADO.NET'		,	4			,	90		,   '9'			,'2020-04-07'),
+                    ('VTIQ010'		, N'Đề thi ASP.NET'		,	7			,	90		,   '10'		,'2020-04-08');
+                    
     
 INSERT INTO `examquestion`
 vALUES
-	('1',	 '1'),
-    ('2',	 '2'),
-    ('3',	 '5'),
-    ('4',	 '6'),
-    ('5',	 '1'),
-    ('6',	 '6'),
-    ('7',	 '5'),
-    ('8',	 '6'),
-    ('9',	 '2');    
+						(	1	,		5		),
+						(	2	,		10		), 
+						(	3	,		4		), 
+						(	4	,		3		), 
+						(	5	,		7		), 
+						(	6	,		10		), 
+						(	7	,		2		), 
+						(	8	,		10		), 
+						(	9	,		9		), 
+						(	10	,		8		); 
     
 -- Question 2: lấy ra tất cả các phòng ban
 SELECT * FROM `account` ORDER BY `accountID`;
